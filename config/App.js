@@ -5,7 +5,7 @@ global.App = {
     password: process.env.WIKI_PASS || require('./user.js').password
   },
   options: {
-    verbose: false,
+    verbose: true,
     silent: false,
     defaultSummary: 'Tumble Bot' + process.env.NODE_ENV !== "production" ? " Development":"",
     concurrency: 5,
