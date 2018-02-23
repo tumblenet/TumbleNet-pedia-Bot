@@ -33,6 +33,6 @@ global.App = {
     aplimit: 999999
   },
   categories: {
-    underConstruction: "Category: Under Construction",
+    underConstruction: "Category:Under Construction",
   }
 }
