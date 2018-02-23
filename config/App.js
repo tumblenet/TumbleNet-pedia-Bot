@@ -7,7 +7,7 @@ global.App = {
   options: {
     verbose: true,
     silent: false,
-    defaultSummary: 'Tumble Bot' + process.env.NODE_ENV !== "production" ? " Development":"",
+    defaultSummary: 'Tumble Bot' + ( (process.env.NODE_ENV !== "production" )? " Development":""),
     concurrency: 5,
     apiUrl: false,
     sparqlEndpoint: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
