@@ -107,7 +107,9 @@ function SetShortPagesAsUnderConstruction() {
     try {
       var test = page.categories.filter(category => (category.title === App.categories.underConstruction));
       if (typeof image_array !== 'undefined' && image_array.length > 0) {
-          throw "Under Construction";
+
+      } else {
+        throw "Under Construction";
       }
     } catch (e) {
       console.log(page.title + " is a short page.");
