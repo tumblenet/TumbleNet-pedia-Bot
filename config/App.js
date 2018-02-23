@@ -1,9 +1,9 @@
 global.App = {
   user: {
     apiUrl: 'http://en.tumblenet.shoutwiki.com/w/api.php',
-    username: process.env.WIKI_USER,
-    password: process.env.WIKI_PASS
-  } || require('./user.js'),
+    username: process.env.WIKI_USER || require('./user.js').username,
+    password: process.env.WIKI_PASS || require('./user.js').password
+  },
   options: {
     verbose: false,
     silent: false,
@@ -27,5 +27,12 @@ global.App = {
       jar: true,
       time: true,
       json: true
+  },
+  qualifications: {
+    maxSizeForShortPage: 3000,
+    aplimit: 999999
+  },
+  categories: {
+    underConstruction: "Under Construction",
   }
 }

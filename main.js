@@ -1,11 +1,13 @@
 require("./config/App.js");
+require('./log.js');
+require("./webserver.js");
+
 const MWBot = require('mwbot');
 
 var bot = new MWBot(App.options, App.requestOptions);
-
 bot.setGlobalRequestOptions(App.globalRequestOptions);
 
-function IfPageExists(pageTitle, exists, doesntExist, error) {
+function IfPageExists(pageTitle="", exists=function () {}, doesntExist=function () {}, error=function (err) {}) {
   //See if a page can be made to see if it exists
   bot.create(pageTitle, '', 'Testing if page exists').then(function (res) {
     //page doesnt exist
@@ -24,19 +26,38 @@ function IfPageExists(pageTitle, exists, doesntExist, error) {
   });
 }
 
-function ForEachPage(query,then) {
-  query.action = "query";
-  query.list = "allpages";
-  query.aplimit = 999999999;
+function ForEachPage(query={}, then=function (page) {}, get="allpages") {
+  if (query.generator == "allpages") {
+    query.gaplimit = query.gaplimit ||  App.qualifications.aplimit
+  } else {
+    query.list = query.list || "allpages";
+    query.aplimit = query.aplimit ||  App.qualifications.aplimit;
+  }
+  query.action = query.action || "query";
 
   //Query for all pages that meet the query
   return bot.request(query).then((res) => {
     // Success
-    var pages = res.query.allpages
+    var pages = res.query[get];
+    if (pages.length ===undefined) {
+      var pagesArray = [];
+      for (var pageId in pages) {
+        pagesArray.push(pages[pageId]);
+      }
+      pages = pagesArray;
+      pagesArray = undefined;
+    }
     pages.forEach(function (page) {
       then(page);
     });
   });
+}
+
+function ForEachPageGetProperty(propertyList=[], query={}, then=function (page) {}) {
+  //propertyList.push("titles");
+  query.generator = query.generator || "allpages";
+  query.prop = query.prop || propertyList.join("|");
+  return ForEachPage(query,then,"pages");
 }
 
 function AutoCreateTalkPages() {
@@ -61,7 +82,6 @@ function AutoCreateTalkPages() {
   // Error
   });
 }
-
 function AutoDeleteTalkPagesOfPagesThatDontExist() {
   ForEachPage({
     apnamespace: 1 //Specify talk pages
@@ -78,19 +98,30 @@ function AutoDeleteTalkPagesOfPagesThatDontExist() {
   });
 }
 
+function SetShortPagesAsUnderConstruction() {
+  ForEachPageGetProperty(["categories"],{
+    gapmaxsize: App.qualifications.maxSizeForShortPage,
+    gapfilterredir: "nonredirects"
+  },function (page) {
+    //console.log(page);
+    try {
+      page.categories.filter(category => (category.title === App.categories.underConstruction))[0];
+    } catch (e) {
+      console.log(page.title + " is a short page.");
+
+    } finally {
+
+    }
+  });
+}
+
 function loop() {
   AutoCreateTalkPages();
   AutoDeleteTalkPagesOfPagesThatDontExist();
 }
 
-function loopThroughAllPagesTest() {
-  ForEachPage({},function (page) {
-    IfPageExists(page.title,function () {
-      console.log("'" + page.title + "' exists.");
-    }, function () {
-      console.log("'" + page.title + "' doesn't exist.");
-    });
-  });
+function DevTest() {
+  SetShortPagesAsUnderConstruction();
 }
 
 bot.login(App.user).then(function (res) {
@@ -99,7 +130,8 @@ bot.login(App.user).then(function (res) {
     // Success
     setInterval(loop, 3000);
     //loop();
-    //loopThroughAllPagesTest();
+
+    //DevTest();
 
   }).catch((err) => {
     // Error: Could not get edit token
