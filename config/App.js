@@ -7,7 +7,7 @@ global.App = {
   options: {
     verbose: false,
     silent: false,
-    defaultSummary: 'TumbleBot',
+    defaultSummary: 'Tumble Bot' + process.env.NODE_ENV !== "production" ? " Development":"",
     concurrency: 5,
     apiUrl: false,
     sparqlEndpoint: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
@@ -33,6 +33,6 @@ global.App = {
     aplimit: 999999
   },
   categories: {
-    underConstruction: "Under Construction",
+    underConstruction: "Category: Under Construction",
   }
 }

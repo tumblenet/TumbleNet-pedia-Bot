@@ -9,9 +9,9 @@ bot.setGlobalRequestOptions(App.globalRequestOptions);
 
 function IfPageExists(pageTitle="", exists=function () {}, doesntExist=function () {}, error=function (err) {}) {
   //See if a page can be made to see if it exists
-  bot.create(pageTitle, '', 'Testing if page exists').then(function (res) {
+  bot.create(pageTitle, '').then(function (res) {
     //page doesnt exist
-    bot.delete(pageTitle, 'Checking over');//Delete the page so it still doesnt exist
+    bot.delete(pageTitle);//Delete the page so it still doesnt exist
     doesntExist();
   }).catch(function (err) {
     //page does exist
@@ -63,7 +63,7 @@ function ForEachPageGetProperty(propertyList=[], query={}, then=function (page) 
 function AutoCreateTalkPages() {
   ForEachPage({},function (page) {
     IfPageExists(page.title,function (res) {
-      bot.create('Talk:' + page.title, '', 'Created Talk Page').then((res) => {
+      bot.create('Talk:' + page.title, '').then((res) => {
         console.log("Talk page created for '" + page.title + "'.");
       }).catch((err) => {
         // General error, or: page already exists
@@ -91,7 +91,7 @@ function AutoDeleteTalkPagesOfPagesThatDontExist() {
 
     },function (err) {//IF PAGE DOESNT EXIST
       console.log("Deleting '" + page.title + "'...");
-      bot.delete(page.title, "Page '" + pageTitle + "' doesn't exist.");
+      bot.delete(page.title);
     });
   }).catch((err) => {
   // Error
@@ -105,10 +105,22 @@ function SetShortPagesAsUnderConstruction() {
   },function (page) {
     //console.log(page);
     try {
-      page.categories.filter(category => (category.title === App.categories.underConstruction))[0];
+      var test = page.categories.filter(category => (category.title === App.categories.underConstruction));
+      console.log(test);
+      if (typeof image_array !== 'undefined' && image_array.length > 0) {
+          throw "Under Construction";
+      }
     } catch (e) {
       console.log(page.title + " is a short page.");
-
+      if (page.title  !== "Test page") {
+        return;
+      }
+      bot.request({
+        action: 'edit',
+         title: page.title,
+         prependtext: "{{construction | sign=~~~~}}\n\n",
+         token: bot.editToken
+       });
     } finally {
 
     }
@@ -118,10 +130,12 @@ function SetShortPagesAsUnderConstruction() {
 function loop() {
   AutoCreateTalkPages();
   AutoDeleteTalkPagesOfPagesThatDontExist();
+  SetShortPagesAsUnderConstruction();
 }
 
 function DevTest() {
   SetShortPagesAsUnderConstruction();
+
 }
 
 bot.login(App.user).then(function (res) {
@@ -131,7 +145,7 @@ bot.login(App.user).then(function (res) {
     setInterval(loop, 3000);
     //loop();
 
-    //DevTest();
+  //  DevTest();
 
   }).catch((err) => {
     // Error: Could not get edit token
