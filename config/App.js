@@ -1,9 +1,9 @@
 global.App = {
-  user: require('./user.js') || {
+  user: {
     apiUrl: 'http://en.tumblenet.shoutwiki.com/w/api.php',
     username: process.env.WIKI_USER,
     password: process.env.WIKI_PASS
-  },
+  } || require('./user.js'),
   options: {
     verbose: false,
     silent: false,
