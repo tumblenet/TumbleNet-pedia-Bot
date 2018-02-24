@@ -132,7 +132,7 @@ function SetShortPagesAsUnderConstruction() {
       bot.request({
         action: 'edit',
         title: page.title,
-        prependtext: "{{construction | sign=~~~~}}/n/n",
+        prependtext: "{{construction | sign=~~~~}}\n\n",
         token: bot.editToken
       });
     } finally {
