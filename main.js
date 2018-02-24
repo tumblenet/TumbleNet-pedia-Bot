@@ -7,6 +7,10 @@ const MWBot = require('mwbot');
 var bot = new MWBot(App.options, App.requestOptions);
 bot.setGlobalRequestOptions(App.globalRequestOptions);
 
+function FirstLetterUppercase(s) {
+  return s[0].toUpperCase() + s.substring(1);
+}
+
 function IfPageExists(pageTitle="", exists=function () {}, doesntExist=function () {}, error=function (err) {}) {
   //See if a page can be made to see if it exists
   bot.create(pageTitle, '').then(function (res) {
@@ -52,12 +56,11 @@ function ForEachPage(query={}, then=function (page) {}, get="allpages") {
     });
   });
 }
-
 function ForEachPageGetProperty(propertyList=[], query={}, then=function (page) {}) {
   //propertyList.push("titles");
   query.generator = query.generator || "allpages";
   query.prop = query.prop || propertyList.join("|");
-  return ForEachPage(query, then, "pages");
+  return ForEachPage(query,then,"pages");
 }
 
 function AutoCreateTalkPages() {
@@ -87,7 +90,7 @@ function AutoDeleteTalkPagesOfPagesThatDontExist() {
     apnamespace: 1 //Specify talk pages
   },function (page) {
     var pageTitle = page.title.substr(5);
-    IfPageExists(pageTitle,function (res) {
+    IfPageExists(pageTitle, function (res) {
 
     },function (err) {//IF PAGE DOESNT EXIST
       console.log("Deleting '" + page.title + "'...");
@@ -98,27 +101,40 @@ function AutoDeleteTalkPagesOfPagesThatDontExist() {
   });
 }
 
+
 function SetShortPagesAsUnderConstruction() {
-  ForEachPageGetProperty(["categories"],{
+  ForEachPageGetProperty(["revisions"],{
     gapmaxsize: App.qualifications.maxSizeForShortPage,
-    gapfilterredir: "nonredirects"
+    gapfilterredir: "nonredirects",
+  	rvprop: "content",
+  	rvdir: "older",
+
   },function (page) {
     //console.log(page);
+    var constructionTemplateName = App.template.underConstruction;
+    var currentRevision = page.revisions[0]['*'];
     try {
-      var test = page.categories.filter(category => (category.title === App.categories.underConstruction));
-      if (typeof image_array !== 'undefined' && image_array.length > 0) {
-
+      var includesTemplate = currentRevision.includes("{{" + constructionTemplateName)
+      var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(constructionTemplateName))
+      console.log(includesTemplate || includesTemplateCapitalised);
+      if (includesTemplate || includesTemplateCapitalised) {
+        // the array is defined and has at least one element
+        //console.log(page.title + " yes");
       } else {
-        throw "Under Construction";
+        //console.log(page.title + " no");
+        throw "Under Construction"
       }
     } catch (e) {
       console.log(page.title + " is a short page.");
+      if (page.title  !== "Test page") {
+        return;
+      }
       bot.request({
         action: 'edit',
-         title: page.title,
-         prependtext: "{{construction | sign=~~~~}}\n\n",
-         token: bot.editToken
-       });
+        title: page.title,
+        prependtext: "{{construction | sign=~~~~}}/n/n",
+        token: bot.editToken
+      });
     } finally {
 
     }
@@ -128,11 +144,17 @@ function SetShortPagesAsUnderConstruction() {
 function loop() {
   AutoCreateTalkPages();
   AutoDeleteTalkPagesOfPagesThatDontExist();
-  //SetShortPagesAsUnderConstruction();
+  SetShortPagesAsUnderConstruction();
 }
 
 function DevTest() {
   SetShortPagesAsUnderConstruction();
+  // bot.request({
+  //   action: 'edit',
+  //   title: "Test page",
+  //   prependtext: "{{construction | sign=~~~~}}",
+  //   token: bot.editToken
+  // });
 
 }
 
@@ -143,7 +165,7 @@ bot.login(App.user).then(function (res) {
     setInterval(loop, 3000);
     //loop();
 
-  //  DevTest();
+    //DevTest();
 
   }).catch((err) => {
     // Error: Could not get edit token

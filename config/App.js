@@ -34,5 +34,8 @@ global.App = {
   },
   categories: {
     underConstruction: "Category:Under Construction",
+  },
+  template: {
+    underConstruction: "construction",
   }
 }
