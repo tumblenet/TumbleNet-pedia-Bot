@@ -39,7 +39,7 @@ function ForEachPage(query={}, then=function (page) {}, get="allpages") {
   return bot.request(query).then((res) => {
     // Success
     var pages = res.query[get];
-    if (pages.length ===undefined) {
+    if (pages.length === undefined) {
       var pagesArray = [];
       for (var pageId in pages) {
         pagesArray.push(pages[pageId]);
@@ -57,7 +57,7 @@ function ForEachPageGetProperty(propertyList=[], query={}, then=function (page) 
   //propertyList.push("titles");
   query.generator = query.generator || "allpages";
   query.prop = query.prop || propertyList.join("|");
-  return ForEachPage(query,then,"pages");
+  return ForEachPage(query, then, "pages");
 }
 
 function AutoCreateTalkPages() {
@@ -128,7 +128,7 @@ function SetShortPagesAsUnderConstruction() {
 function loop() {
   AutoCreateTalkPages();
   AutoDeleteTalkPagesOfPagesThatDontExist();
-  SetShortPagesAsUnderConstruction();
+  //SetShortPagesAsUnderConstruction();
 }
 
 function DevTest() {
