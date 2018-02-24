@@ -126,9 +126,6 @@ function SetShortPagesAsUnderConstruction() {
       }
     } catch (e) {
       console.log(page.title + " is a short page.");
-      if (page.title  !== "Test page") {
-        return;
-      }
       bot.request({
         action: 'edit',
         title: page.title,
