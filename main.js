@@ -116,7 +116,7 @@ function SetShortPagesAsUnderConstruction() {
     try {
       var includesTemplate = currentRevision.includes("{{" + constructionTemplateName)
       var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(constructionTemplateName))
-      console.log(includesTemplate || includesTemplateCapitalised);
+      //console.log(includesTemplate || includesTemplateCapitalised);
       if (includesTemplate || includesTemplateCapitalised) {
         // the array is defined and has at least one element
         //console.log(page.title + " yes");
