@@ -250,7 +250,7 @@ function AutoDeleteDocumentationPagesOfTemplatesThatDontExist() {
 
 function loop() {
   AutoCreateTalkPages(ToArray(App.wiki.normal_ns));
-  AutoDeleteTalkPagesOfPagesThatDontExist(ToArray(App.wiki.talk_ns));
+  AutoDeleteTalkPagesOfPagesThatDontExist();
   SetShortPagesAsUnderConstruction();
   AddDocumentationToTemplates();
 }
