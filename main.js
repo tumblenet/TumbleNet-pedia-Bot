@@ -102,11 +102,12 @@ function AutoCreateTalkPages(namespaces) {
         IfPageExists(page.title,function (res) {
           var namespaceTitle = App.wiki.getNamespaceName(namespace);
           var talkNamespaceTitle = App.wiki.getTalkNamespaceName(namespace);
+          var pageTitle = page.title
           if (namespaceTitle !== "") {
             var pageTitle = page.title.replace(namespaceTitle + ":","");
           }
-          bot.create(talkNamespaceTitle + ':' + page.title, '').then((res) => {
-            console.log("Talk page created for '" + page.title + "': " + talkNamespaceTitle + ':' + pageTitle);
+          bot.create(talkNamespaceTitle + ':' + pageTitle, '').then((res) => {
+            console.log("Talk page created for '" + pageTitle + "': " + talkNamespaceTitle + ':' + pageTitle);
           }).catch((err) => {
             // General error, or: page already exists
             switch (err.code) {
