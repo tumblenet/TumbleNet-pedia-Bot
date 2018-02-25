@@ -101,7 +101,7 @@ function AutoCreateTalkPages(namespaces) {
       },function (page) {
         IfPageExists(page.title,function (res) {
           bot.create(App.wiki.getTalkNamespaceName(namespace) + ':' + page.title, '').then((res) => {
-            console.log("Talk page created for '" + page.title + "'.");
+            console.log("Talk page created for '" + page.title + "': " + App.wiki.getTalkNamespaceName(namespace) + ':' + page.title);
           }).catch((err) => {
             // General error, or: page already exists
             switch (err.code) {
