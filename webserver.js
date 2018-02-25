@@ -12,3 +12,6 @@ app.use(function (req,res,next) {
 server.listen(port, function () {
   console.log("Server listening on port " + port);
 });
+
+
+global.App.server = server;

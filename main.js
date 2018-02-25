@@ -12,11 +12,11 @@ function FirstLetterUppercase(s) {
 }
 
 function ToArray(obj) {
-  var array = [];
+  var objArray = [];
   for (var item in obj) {
-    array.push(obj[item]);
+    objArray.push(obj[item]);
   }
-  return array;
+  return objArray;
 }
 
 function IfPageExists(pageTitle="", exists=function () {}, doesntExist=function () {}, error=function (err) {}) {
@@ -85,7 +85,7 @@ function AutoCreateTalkPages(namespaces) {
 
               break;
             default:
-              console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code)
+              console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code);
           }
         });
       },function (err) {
@@ -109,7 +109,7 @@ function AutoCreateTalkPages(namespaces) {
 
                 break;
               default:
-                console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code)
+                console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code);
             }
           });
         },function (err) {
@@ -171,8 +171,8 @@ function SetShortPagesAsUnderConstruction() {
     var constructionTemplateName = App.template.underConstruction;
     var currentRevision = page.revisions[0]['*'];
     try {
-      var includesTemplate = currentRevision.includes("{{" + constructionTemplateName)
-      var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(constructionTemplateName))
+      var includesTemplate = currentRevision.includes("{{" + constructionTemplateName);
+      var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(constructionTemplateName));
       //console.log(includesTemplate || includesTemplateCapitalised);
       if (includesTemplate || includesTemplateCapitalised) {
         // the array is defined and has at least one element
@@ -266,18 +266,21 @@ function DevTest() {
 
 }
 
-bot.login(App.user).then(function (res) {
-  //logged In
-  bot.getEditToken().then((response) => {
-    // Success
-    setInterval(loop, 3000);
-    //loop();
+function Start() {
+  bot.login(App.user).then(function (res) {
+    //logged In
+    bot.getEditToken().then((res) => {
+      // Success
+      setInterval(loop, 3000);
+      //loop();
 
-    //DevTest();
+      //DevTest();
 
-  }).catch((err) => {
-    // Error: Could not get edit token
+    }).catch((err) => {
+      // Error: Could not get edit token
+    });
+  }).catch(function (err) {
+    //error logging in
   });
-}).catch(function (err) {
-  //error logging in
-});
+}
+Start();

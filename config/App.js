@@ -60,7 +60,7 @@ function GetCertainNS(array,checkFunc) {
 
 global.App = {
   user: {
-    apiUrl: 'http: //en.tumblenet.shoutwiki.com/w/api.php',
+    apiUrl: 'http://en.tumblenet.shoutwiki.com/w/api.php',
     username: process.env.WIKI_USER || require('./user.js').username,
     password: process.env.WIKI_PASS || require('./user.js').password
   },
@@ -70,7 +70,7 @@ global.App = {
     defaultSummary: 'Tumble Bot' + ( (process.env.NODE_ENV !== "production" )? " Development": ""),
     concurrency: 5,
     apiUrl: false,
-    sparqlEndpoint: 'https: //query.wikidata.org/bigdata/namespace/wdq/sparql'
+    sparqlEndpoint: 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
   },
   requestOptions: {
 
