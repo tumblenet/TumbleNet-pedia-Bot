@@ -145,6 +145,9 @@ function AddDocumentationToTemplates() {
   	rvprop: "content"
   },function (page) {
     //console.log(page);
+    if (page.name.endsWith("/doc")) {
+      return;
+    }
     var documentationTemplateName = App.template.documentation;
     var currentRevision = page.revisions[0]['*'];
     try {
@@ -169,6 +172,22 @@ function AddDocumentationToTemplates() {
     } finally {
 
     }
+  });
+}
+
+function AutoDeleteDocumentationPagesOfPagesThatDontExist() {
+  ForEachPage({
+    apnamespace: 1 //Specify talk pages
+  },function (page) {
+    var pageTitle = page.title.substr(5);
+    IfPageExists(pageTitle, function (res) {
+
+    },function (err) {//IF PAGE DOESNT EXIST
+      console.log("Deleting '" + page.title + "'...");
+      bot.delete(page.title);
+    });
+  }).catch((err) => {
+  // Error
   });
 }
 
