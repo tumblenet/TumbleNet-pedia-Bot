@@ -11,6 +11,14 @@ function FirstLetterUppercase(s) {
   return s[0].toUpperCase() + s.substring(1);
 }
 
+function ToArray(obj) {
+  var array = [];
+  for (var item in obj) {
+    array.push(obj[item]);
+  }
+  return array;
+}
+
 function IfPageExists(pageTitle="", exists=function () {}, doesntExist=function () {}, error=function (err) {}) {
   //See if a page can be made to see if it exists
   bot.create(pageTitle, '').then(function (res) {
@@ -89,7 +97,7 @@ function AutoCreateTalkPages(namespaces) {
   } else {
     namespaces.forEach(function (namespace) {
       ForEachPage({
-        apnamespace:namespace;
+        apnamespace: namespace
       },function (page) {
         IfPageExists(page.title,function (res) {
           bot.create('Talk:' + page.title, '').then((res) => {
@@ -241,8 +249,8 @@ function AutoDeleteDocumentationPagesOfTemplatesThatDontExist() {
 }
 
 function loop() {
-  AutoCreateTalkPages(App.wiki.normal_ns);
-  AutoDeleteTalkPagesOfPagesThatDontExist(App.wiki.talk_ns);
+  AutoCreateTalkPages(ToArray(App.wiki.normal_ns));
+  AutoDeleteTalkPagesOfPagesThatDontExist(ToArray(App.wiki.talk_ns));
   SetShortPagesAsUnderConstruction();
   AddDocumentationToTemplates();
 }

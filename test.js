@@ -1,10 +1,11 @@
 require('./config/App.js');
 
-console.log(App.wiki.namespaces.file);
+function ToArray(obj) {
+  var array = [];
+  for (var item in obj) {
+    array.push(obj[item]);
+  }
+  return array;
+}
 
-console.log(App.wiki.namespaces);
-
-console.log(App.wiki.talk_ns);
-
-console.log(App.wiki.getNamespaceName(12));
-console.log(App.wiki.getTalkNamespaceNamefromNSName("Talk"));
+console.log(ToArray(App.wiki.normal_ns));
