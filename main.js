@@ -100,7 +100,7 @@ function AutoCreateTalkPages(namespaces) {
         apnamespace: namespace
       },function (page) {
         IfPageExists(page.title,function (res) {
-          bot.create('Talk:' + page.title, '').then((res) => {
+          bot.create(App.getTalkNamespaceName(namespace) + ':' + page.title, '').then((res) => {
             console.log("Talk page created for '" + page.title + "'.");
           }).catch((err) => {
             // General error, or: page already exists
