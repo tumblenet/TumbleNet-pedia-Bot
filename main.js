@@ -77,7 +77,7 @@ function AutoCreateTalkPages(namespaces) {
     ForEachPage({},function (page) {
       IfPageExists(page.title,function (res) {
         bot.create('Talk:' + page.title, '').then((res) => {
-          console.log("Talk page created for '" + page.title + "'.");
+          console.log("Talk page created for '" + page.title + "'.  --  " + 'Talk:' + page.title);
         }).catch((err) => {
           // General error, or: page already exists
           switch (err.code) {
@@ -106,7 +106,7 @@ function AutoCreateTalkPages(namespaces) {
             var pageTitle = page.title.replace(namespaceTitle + ":","");
           }
           bot.create(talkNamespaceTitle + ':' + page.title, '').then((res) => {
-            console.log("Talk page created for '" + page.title + "': " + talkNamespaceTitle + ':' + pageTitle;
+            console.log("Talk page created for '" + page.title + "': " + talkNamespaceTitle + ':' + pageTitle);
           }).catch((err) => {
             // General error, or: page already exists
             switch (err.code) {
