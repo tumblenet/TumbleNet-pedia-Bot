@@ -205,30 +205,37 @@ function AddDocumentationToTemplates() {
     if (page.title.endsWith("/doc")) {
       return;
     }
-    var documentationTemplateName = App.template.documentation;
-    var currentRevision = page.revisions[0]['*'];
     try {
-      var includesTemplate = currentRevision.includes("{{" + documentationTemplateName);
-      var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(documentationTemplateName));
-      //console.log(includesTemplate || includesTemplateCapitalised);
-      if (includesTemplate || includesTemplateCapitalised) {
-        // the array is defined and has at least one element
-        //console.log(page.title + " yes");
-      } else {
-        //console.log(page.title + " no");
-        throw "Documentation"
+      var documentationTemplateName = App.template.documentation;
+      var currentRevision = page.revisions[0]['*'];
+      try {
+        var includesTemplate = currentRevision.includes("{{" + documentationTemplateName);
+        var includesTemplateCapitalised = currentRevision.includes("{{" + FirstLetterUppercase(documentationTemplateName));
+        //console.log(includesTemplate || includesTemplateCapitalised);
+        if (includesTemplate || includesTemplateCapitalised) {
+          // the array is defined and has at least one element
+          //console.log(page.title + " yes");
+        } else {
+          //console.log(page.title + " no");
+          throw "Documentation"
+        }
+      } catch (e) {
+        console.log(page.title + " has no documentation");
+        bot.request({
+          action: 'edit',
+          title: page.title,
+          appendtext: "<noinclude>{{documentation}}</noinclude>",
+          token: bot.editToken
+        });
+      } finally {
+
       }
     } catch (e) {
-      console.log(page.title + " has no documentation");
-      bot.request({
-        action: 'edit',
-        title: page.title,
-        appendtext: "<noinclude>{{documentation}}</noinclude>",
-        token: bot.editToken
-      });
+      return;
     } finally {
 
     }
+
   });
 }
 
