@@ -202,7 +202,7 @@ function AddDocumentationToTemplates() {
   	rvprop: "content"
   },function (page) {
     //console.log(page);
-    if (page.name.endsWith("/doc")) {
+    if (page.title.endsWith("/doc")) {
       return;
     }
     var documentationTemplateName = App.template.documentation;
