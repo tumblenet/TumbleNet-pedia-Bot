@@ -37,5 +37,6 @@ global.App = {
   },
   template: {
     underConstruction: "construction",
+    documentation: ""
   }
 }
