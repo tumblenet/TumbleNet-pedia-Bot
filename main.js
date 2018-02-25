@@ -63,42 +63,91 @@ function ForEachPageGetProperty(propertyList=[], query={}, then=function (page) 
   return ForEachPage(query,then,"pages");
 }
 
-function AutoCreateTalkPages() {
-  ForEachPage({},function (page) {
-    IfPageExists(page.title,function (res) {
-      bot.create('Talk:' + page.title, '').then((res) => {
-        console.log("Talk page created for '" + page.title + "'.");
-      }).catch((err) => {
-        // General error, or: page already exists
-        switch (err.code) {
-          case "articleexists":
+function AutoCreateTalkPages(namespaces) {
 
-            break;
-          default:
-            console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code)
-        }
+  if (namespaces === undefined) {
+    ForEachPage({},function (page) {
+      IfPageExists(page.title,function (res) {
+        bot.create('Talk:' + page.title, '').then((res) => {
+          console.log("Talk page created for '" + page.title + "'.");
+        }).catch((err) => {
+          // General error, or: page already exists
+          switch (err.code) {
+            case "articleexists":
+
+              break;
+            default:
+              console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code)
+          }
+        });
+      },function (err) {
+
       });
-    },function (err) {
-
+    }).catch((err) => {
+    // Error
     });
-  }).catch((err) => {
-  // Error
-  });
+  } else {
+    namespaces.forEach(function (namespace) {
+      ForEachPage({
+        apnamespace:namespace;
+      },function (page) {
+        IfPageExists(page.title,function (res) {
+          bot.create('Talk:' + page.title, '').then((res) => {
+            console.log("Talk page created for '" + page.title + "'.");
+          }).catch((err) => {
+            // General error, or: page already exists
+            switch (err.code) {
+              case "articleexists":
+
+                break;
+              default:
+                console.log("Error creating talk page for '" + page.title + "'.  --  " + err.code)
+            }
+          });
+        },function (err) {
+
+        });
+      }).catch((err) => {
+      // Error
+      });
+    });
+  }
+
+
 }
-function AutoDeleteTalkPagesOfPagesThatDontExist() {
-  ForEachPage({
-    apnamespace: 1 //Specify talk pages
-  },function (page) {
-    var pageTitle = page.title.substr(5);
-    IfPageExists(pageTitle, function (res) {
+function AutoDeleteTalkPagesOfPagesThatDontExist(namespaces) {
+  if (namespaces === undefined) {
+    ForEachPage({
+      apnamespace: App.wiki.namespaces.Talk //Specify talk pages
+    },function (page) {
+      var pageTitle = page.title.substr(5);
+      IfPageExists(pageTitle, function (res) {
 
-    },function (err) {//IF PAGE DOESNT EXIST
-      console.log("Deleting '" + page.title + "'...");
-      bot.delete(page.title);
+      },function (err) {//IF PAGE DOESNT EXIST
+        console.log("Deleting '" + page.title + "'...");
+        bot.delete(page.title);
+      });
+    }).catch((err) => {
+    // Error
     });
-  }).catch((err) => {
-  // Error
-  });
+  } else {
+    namespaces.forEach(function (namespace) {
+      ForEachPage({
+        apnamespace: namespace //Specify talk pages
+      },function (page) {
+        var pageTitle = page.title.substr(5);
+        IfPageExists(pageTitle, function (res) {
+
+        },function (err) {//IF PAGE DOESNT EXIST
+          console.log("Deleting '" + page.title + "'...");
+          bot.delete(page.title);
+        });
+      }).catch((err) => {
+      // Error
+      });
+    });
+  }
+
 }
 
 
@@ -166,7 +215,7 @@ function AddDocumentationToTemplates() {
       bot.request({
         action: 'edit',
         title: page.title,
-        appendtext: "<noinclude>{{documentation}}</noinclude>\n\n",
+        appendtext: "<noinclude>{{documentation}}</noinclude>",
         token: bot.editToken
       });
     } finally {
@@ -175,9 +224,9 @@ function AddDocumentationToTemplates() {
   });
 }
 
-function AutoDeleteDocumentationPagesOfPagesThatDontExist() {
+function AutoDeleteDocumentationPagesOfTemplatesThatDontExist() {
   ForEachPage({
-    apnamespace: 1 //Specify talk pages
+    apnamespace: App.wiki.namespaces.Template //Specify template pages
   },function (page) {
     var pageTitle = page.title.substr(5);
     IfPageExists(pageTitle, function (res) {
@@ -192,8 +241,8 @@ function AutoDeleteDocumentationPagesOfPagesThatDontExist() {
 }
 
 function loop() {
-  AutoCreateTalkPages();
-  AutoDeleteTalkPagesOfPagesThatDontExist();
+  AutoCreateTalkPages(App.wiki.normal_ns);
+  AutoDeleteTalkPagesOfPagesThatDontExist(App.wiki.talk_ns);
   SetShortPagesAsUnderConstruction();
   AddDocumentationToTemplates();
 }
