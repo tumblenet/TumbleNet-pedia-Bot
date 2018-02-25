@@ -107,7 +107,7 @@ function AutoCreateTalkPages(namespaces) {
             var pageTitle = page.title.replace(namespaceTitle + ":","");
           }
           bot.create(talkNamespaceTitle + ':' + pageTitle, '').then((res) => {
-            console.log("Talk page created for '" + pageTitle + "': " + talkNamespaceTitle + ':' + pageTitle);
+            console.log("Talk page created for '" + page.title + "': " + talkNamespaceTitle + ':' + pageTitle);
           }).catch((err) => {
             // General error, or: page already exists
             switch (err.code) {
